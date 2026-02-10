@@ -1,1 +1,10 @@
 * text=auto eol=lf
+
+# Prefer fork (ours) strategy for files meant to be overlays and local-only
+*.local.* merge=ours
+/data/config/openclaw.json merge=ours
+/Dockerfile.local merge=ours
+/docker-compose.local.yml merge=ours
+
+# Prefer theirs for canonical upstream-only files - NOT overlays
+# For canonical, prefer upstream changes unless modified for overlays
