@@ -1,8 +1,26 @@
 FROM node:22-bookworm
 
-# Install Bun (required for build scripts)
+# Install system build essentials required for Homebrew
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    build-essential procps curl file git ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Prepare Homebrew directory and install as 'node' user
+RUN mkdir -p /home/linuxbrew/.linuxbrew && chown -R node:node /home/linuxbrew /home/node
+USER node
+ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
+RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Bun for the 'node' user
+ENV BUN_INSTALL="/home/node/.bun"
 RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:${PATH}"
+ENV PATH="/home/node/.bun/bin:${PATH}"
+
+WORKDIR /app
+# Switching back to root to finish system setup
+USER root
 
 RUN corepack enable
 
