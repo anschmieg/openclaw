@@ -55,4 +55,5 @@ services:
     stdin_open: true
     tty: true
     init: true
+    restart: "no"
     entrypoint: ["node", "dist/index.js"]
