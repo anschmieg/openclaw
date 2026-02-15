@@ -14,7 +14,9 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
       PIP_BREAK_SYSTEM_PACKAGES: 1
+      OPENCLAW_SKILLS: "clawhub,openai-whisper,outlook"
     volumes:
+      - .:/app/repo:ro
       - /data/openclaw/config:/home/node/.openclaw
       - /data/openclaw/workspace:/home/node/.openclaw/workspace
       - /data/openclaw/brew:/home/linuxbrew/.linuxbrew
@@ -52,7 +54,9 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
       PIP_BREAK_SYSTEM_PACKAGES: 1
+      OPENCLAW_SKILLS: "clawhub,openai-whisper,outlook"
     volumes:
+      - .:/app/repo:ro
       - /data/openclaw/config:/home/node/.openclaw
       - /data/openclaw/workspace:/home/node/.openclaw/workspace
       - /data/openclaw/brew:/home/linuxbrew/.linuxbrew

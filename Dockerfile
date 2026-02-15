@@ -20,7 +20,13 @@ RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.co
 # Install Bun for the 'node' user
 ENV BUN_INSTALL="/home/node/.bun"
 RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/home/node/.bun/bin:${PATH}"
+ENV PATH="/home/node/.npm-global/bin:/home/node/.local/bin:/home/node/.bun/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+# Configure NPM for global installs without root and install ClawHub
+RUN mkdir -p /home/node/.npm-global && \
+    npm config set prefix '/home/node/.npm-global' && \
+    npm install -g clawhub
 
 WORKDIR /app
 USER root
