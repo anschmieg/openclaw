@@ -1,0 +1,59 @@
+services:
+  openclaw-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: openclaw:local
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
+    volumes:
+      - ./data/config:/home/node/.openclaw
+      - ./data/workspace:/home/node/.openclaw/workspace
+      - ./data/brew:/home/linuxbrew/.linuxbrew
+    ports:
+      - "18789:18789"
+      - "18790:18790"
+    init: true
+    restart: unless-stopped
+    command:
+      [
+        "node",
+        "dist/index.js",
+        "gateway",
+        "--bind",
+        "lan",
+        "--port",
+        "18789",
+      ]
+
+  openclaw-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: openclaw:local
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      BROWSER: echo
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
+    volumes:
+      - ./data/config:/home/node/.openclaw
+      - ./data/workspace:/home/node/.openclaw/workspace
+      - ./data/brew:/home/linuxbrew/.linuxbrew
+    stdin_open: true
+    tty: true
+    init: true
+    restart: "no"
+    entrypoint: ["node", "dist/index.js"]
