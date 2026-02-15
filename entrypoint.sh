@@ -14,10 +14,11 @@ chown -R node:node /home/linuxbrew
 chown -R node:node /home/node/.openclaw
 chown -R node:node /home/node/.local
 chown -R node:node /home/node/.npm-global
-chown -R node:node /app
 
-# Skip /app/repo as it is a read-only mount and will cause chown to fail
-# (The loop was caused by chown failing on the RO mount)
+# Fix /app without hitting the read-only /app/repo mount
+# We find everything in /app but exclude the repo directory
+find /app -maxdepth 1 ! -path /app ! -path /app/repo -exec chown -R node:node {} +
+chown node:node /app
 
 # Ensure local bin is in PATH for the whole session
 export PATH="/home/node/.npm-global/bin:/home/node/.local/bin:/home/node/.bun/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
