@@ -62,9 +62,9 @@ RUN chown -R node:node /app
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Security hardening: Run as non-root user
-# Note: entrypoint.sh handles the switch back to user node for the CMD
+# Run entrypoint as root to allow permission fixes
+USER root
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-USER node
 
+# The entrypoint will drop to user node via 'su'
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "lan"]
