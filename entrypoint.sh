@@ -14,7 +14,9 @@ chown -R node:node /home/linuxbrew
 chown -R node:node /home/node/.openclaw
 chown -R node:node /app
 
-# Execute the command as the node user
+# Ensure local bin is in PATH for the whole session
+export PATH="/home/node/.local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
+
+# Execute the command as the node user, preserving the environment
 echo "Starting OpenClaw..."
-# We use 'runuser' or 'su' to drop privileges
-exec su node -c "$*"
+exec su -m node -c "$*"
