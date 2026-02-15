@@ -1,9 +1,10 @@
 FROM node:22-bookworm
 
-# Install system build essentials required for Homebrew
+# Install system build essentials and python
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    build-essential procps curl file git ca-certificates && \
+    build-essential procps curl file git ca-certificates \
+    ffmpeg python3-full python3-pip python3-venv jq gh && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -24,14 +25,6 @@ ENV PATH="/home/node/.bun/bin:${PATH}"
 WORKDIR /app
 USER root
 RUN corepack enable
-
-ARG OPENCLAW_DOCKER_APT_PACKAGES=""
-RUN if [ -n "$OPENCLAW_DOCKER_APT_PACKAGES" ]; then \
-      apt-get update && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $OPENCLAW_DOCKER_APT_PACKAGES && \
-      apt-get clean && \
-      rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
-    fi
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY ui/package.json ./ui/package.json
