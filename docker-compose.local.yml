@@ -1,6 +1,7 @@
 services:
   openclaw-gateway:
 <<<<<<< HEAD
+<<<<<<< HEAD
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,6 +9,15 @@ services:
 =======
     image: ${OPENCLAW_IMAGE:-openclaw:local}
 >>>>>>> 860c90001 (chore(Dockerfile): install system build essentials required for Homebrew)
+=======
+    image: ${OPENCLAW_IMAGE:-openclaw:local}
+=======
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: openclaw:local
+>>>>>>> 13681b4f4 (chore: merge upstream gitignore with local customization)
+>>>>>>> 196386f11 (chore: merge upstream gitignore with local customization)
     environment:
       HOME: /home/node
       TERM: xterm-256color
@@ -19,6 +29,7 @@ services:
       OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
     volumes:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - ./data/config:/home/node/.openclaw
       - ./data/workspace:/home/node/.openclaw/workspace
       - ./data/brew:/home/linuxbrew/.linuxbrew
@@ -26,13 +37,26 @@ services:
       - "18789:18789"
       - "18790:18790"
 =======
+=======
+>>>>>>> 196386f11 (chore: merge upstream gitignore with local customization)
       - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
       - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
       - openclaw-brew:/home/linuxbrew/.linuxbrew
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+<<<<<<< HEAD
 >>>>>>> 860c90001 (chore(Dockerfile): install system build essentials required for Homebrew)
+=======
+=======
+      - ./data/config:/home/node/.openclaw
+      - ./data/workspace:/home/node/.openclaw/workspace
+      - ./data/brew:/home/linuxbrew/.linuxbrew
+    ports:
+      - "18789:18789"
+      - "18790:18790"
+>>>>>>> 13681b4f4 (chore: merge upstream gitignore with local customization)
+>>>>>>> 196386f11 (chore: merge upstream gitignore with local customization)
     init: true
     restart: unless-stopped
     command:
@@ -42,15 +66,23 @@ services:
         "gateway",
         "--bind",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "lan",
 =======
         "${OPENCLAW_GATEWAY_BIND:-lan}",
 >>>>>>> 860c90001 (chore(Dockerfile): install system build essentials required for Homebrew)
+=======
+        "${OPENCLAW_GATEWAY_BIND:-lan}",
+=======
+        "lan",
+>>>>>>> 13681b4f4 (chore: merge upstream gitignore with local customization)
+>>>>>>> 196386f11 (chore: merge upstream gitignore with local customization)
         "--port",
         "18789",
       ]
 
   openclaw-cli:
+<<<<<<< HEAD
 <<<<<<< HEAD
     build:
       context: .
@@ -59,6 +91,15 @@ services:
 =======
     image: ${OPENCLAW_IMAGE:-openclaw:local}
 >>>>>>> 860c90001 (chore(Dockerfile): install system build essentials required for Homebrew)
+=======
+    image: ${OPENCLAW_IMAGE:-openclaw:local}
+=======
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: openclaw:local
+>>>>>>> 13681b4f4 (chore: merge upstream gitignore with local customization)
+>>>>>>> 196386f11 (chore: merge upstream gitignore with local customization)
     environment:
       HOME: /home/node
       TERM: xterm-256color
@@ -71,6 +112,7 @@ services:
       OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
     volumes:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - ./data/config:/home/node/.openclaw
       - ./data/workspace:/home/node/.openclaw/workspace
       - ./data/brew:/home/linuxbrew/.linuxbrew
@@ -80,6 +122,8 @@ services:
     restart: "no"
     entrypoint: ["node", "dist/index.js"]
 =======
+=======
+>>>>>>> 196386f11 (chore: merge upstream gitignore with local customization)
       - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
       - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
       - openclaw-brew:/home/linuxbrew/.linuxbrew
@@ -90,4 +134,17 @@ services:
 
 volumes:
   openclaw-brew:
+<<<<<<< HEAD
 >>>>>>> 860c90001 (chore(Dockerfile): install system build essentials required for Homebrew)
+=======
+=======
+      - ./data/config:/home/node/.openclaw
+      - ./data/workspace:/home/node/.openclaw/workspace
+      - ./data/brew:/home/linuxbrew/.linuxbrew
+    stdin_open: true
+    tty: true
+    init: true
+    restart: "no"
+    entrypoint: ["node", "dist/index.js"]
+>>>>>>> 13681b4f4 (chore: merge upstream gitignore with local customization)
+>>>>>>> 196386f11 (chore: merge upstream gitignore with local customization)
