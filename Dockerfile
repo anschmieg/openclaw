@@ -11,7 +11,8 @@ RUN apt-get update && \
 RUN mkdir -p /opt/homebrew-template /home/linuxbrew/.linuxbrew && \
     chown -R node:node /opt/homebrew-template /home/linuxbrew/.linuxbrew
 USER node
-ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
+ENV PATH="/home/node/.local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
     cp -a /home/linuxbrew/.linuxbrew/. /opt/homebrew-template/
 

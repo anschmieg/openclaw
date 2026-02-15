@@ -13,6 +13,7 @@ services:
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
+      PIP_BREAK_SYSTEM_PACKAGES: 1
     volumes:
       - /data/openclaw/config:/home/node/.openclaw
       - /data/openclaw/workspace:/home/node/.openclaw/workspace
@@ -49,6 +50,7 @@ services:
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
+      PIP_BREAK_SYSTEM_PACKAGES: 1
     volumes:
       - /data/openclaw/config:/home/node/.openclaw
       - /data/openclaw/workspace:/home/node/.openclaw/workspace
