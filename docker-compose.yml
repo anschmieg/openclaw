@@ -21,6 +21,7 @@ services:
       - /data/openclaw/workspace:/home/node/.openclaw/workspace
       - /data/openclaw/brew:/home/linuxbrew/.linuxbrew
       - /data/openclaw/local:/home/node/.local
+      - /data/openclaw/npm:/home/node/.npm-global
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
@@ -61,6 +62,7 @@ services:
       - /data/openclaw/workspace:/home/node/.openclaw/workspace
       - /data/openclaw/brew:/home/linuxbrew/.linuxbrew
       - /data/openclaw/local:/home/node/.local
+      - /data/openclaw/npm:/home/node/.npm-global
     stdin_open: true
     tty: true
     init: true
