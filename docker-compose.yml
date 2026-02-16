@@ -16,6 +16,8 @@ services:
       PIP_BREAK_SYSTEM_PACKAGES: 1
       OPENCLAW_SKILLS: "clawhub,openai-whisper,outlook"
       OPENCLAW_NO_APPROVAL_GATES: 1
+      OPENCLAW_GATEWAY_PORT: 18789
+      OPENCLAW_GATEWAY_BIND: lan
     volumes:
       - .:/app/repo:ro
       - /data/openclaw/config:/home/node/.openclaw
@@ -58,6 +60,8 @@ services:
       PIP_BREAK_SYSTEM_PACKAGES: 1
       OPENCLAW_SKILLS: "clawhub,openai-whisper,outlook"
       OPENCLAW_NO_APPROVAL_GATES: 1
+      OPENCLAW_GATEWAY_PORT: 18789
+      OPENCLAW_GATEWAY_BIND: lan
     volumes:
       - .:/app/repo:ro
       - /data/openclaw/config:/home/node/.openclaw
