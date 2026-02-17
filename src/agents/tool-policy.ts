@@ -60,9 +60,12 @@ export const TOOL_GROUPS: Record<string, string[]> = {
     "llm-task",
     "lobster",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     "voice-call",
 >>>>>>> 43e724d55 (chore: merge upstream changes)
+=======
+>>>>>>> 91658f754 (Deploy: add missing plugin manifest and update tool policy)
   ],
 };
 
@@ -82,9 +85,12 @@ const TOOL_PROFILES: Record<ToolProfileId, ToolProfilePolicy> = {
       "llm-task",
       "lobster",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       "voice-call",
 >>>>>>> 43e724d55 (chore: merge upstream changes)
+=======
+>>>>>>> 91658f754 (Deploy: add missing plugin manifest and update tool policy)
     ],
   },
   messaging: {
