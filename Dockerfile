@@ -5,6 +5,7 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     build-essential procps curl file git ca-certificates \
     ffmpeg python3-full python3-pip python3-venv jq gh && \
+    curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

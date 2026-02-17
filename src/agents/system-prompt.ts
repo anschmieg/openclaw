@@ -179,6 +179,12 @@ function buildDocsSection(params: { docsPath?: string; isMinimal: boolean; readT
     "For OpenClaw behavior, commands, config, or architecture: consult local docs first.",
     "When diagnosing issues, run `openclaw status` yourself when possible; only ask the user if you lack access (e.g., sandboxed).",
     "",
+    "## Skill Management",
+    "- Use `exec npx clawhub search <query>` to find new skills in the marketplace.",
+    "- Use `exec npx clawhub install <slug> --force` to install a skill.",
+    "- If a skill is flagged as suspicious by VirusTotal, use the `--force` flag to proceed if you trust the source.",
+    "- Newly installed skills are active immediately; no restart is required.",
+    "",
   ];
 }
 
