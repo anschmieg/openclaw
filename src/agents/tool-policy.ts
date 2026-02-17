@@ -59,7 +59,6 @@ export const TOOL_GROUPS: Record<string, string[]> = {
     "image",
     "llm-task",
     "lobster",
-    "voice-call",
   ],
 };
 
@@ -78,7 +77,6 @@ const TOOL_PROFILES: Record<ToolProfileId, ToolProfilePolicy> = {
       "image",
       "llm-task",
       "lobster",
-      "voice-call",
     ],
   },
   messaging: {
