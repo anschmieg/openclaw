@@ -17,6 +17,14 @@ export const BUNDLED_ENABLED_BY_DEFAULT = new Set<string>([
   "device-pair",
   "phone-control",
   "talk-voice",
+  "copilot-proxy",
+  "google-antigravity-auth",
+  "google-gemini-cli-auth",
+  "llm-task",
+  "lobster",
+  "memory-core",
+  "memory-lancedb",
+  "voice-call",
 ]);
 
 const normalizeList = (value: unknown): string[] => {
