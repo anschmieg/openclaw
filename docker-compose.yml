@@ -35,6 +35,8 @@ services:
       - "traefik.http.routers.openclaw-secure.rule=Host(`openclaw.nothing.pink`)"
       - "traefik.http.routers.openclaw-secure.entrypoints=https"
       - "traefik.http.routers.openclaw-secure.tls=true"
+      - "traefik.http.middlewares.openclaw-ws.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.openclaw-secure.middlewares=openclaw-ws"
       - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
     init: true
     restart: unless-stopped
