@@ -57,6 +57,9 @@ export const TOOL_GROUPS: Record<string, string[]> = {
     "web_search",
     "web_fetch",
     "image",
+    "llm-task",
+    "lobster",
+    "voice-call",
   ],
 };
 
@@ -67,7 +70,16 @@ const TOOL_PROFILES: Record<ToolProfileId, ToolProfilePolicy> = {
     allow: ["session_status"],
   },
   coding: {
-    allow: ["group:fs", "group:runtime", "group:sessions", "group:memory", "image"],
+    allow: [
+      "group:fs",
+      "group:runtime",
+      "group:sessions",
+      "group:memory",
+      "image",
+      "llm-task",
+      "lobster",
+      "voice-call",
+    ],
   },
   messaging: {
     allow: [

@@ -27,7 +27,7 @@ ENV PATH="/home/node/.npm-global/bin:/home/node/.local/bin:/home/node/.bun/bin:/
 # Configure NPM for global installs without root and install ClawHub
 RUN mkdir -p /home/node/.npm-global && \
     npm config set prefix '/home/node/.npm-global' && \
-    npm install -g clawhub
+    npm install -g clawhub @google/gemini-cli @clawdbot/lobster
 
 WORKDIR /app
 USER root
