@@ -20,11 +20,11 @@ export const BUNDLED_ENABLED_BY_DEFAULT = new Set<string>([
   "copilot-proxy",
   "google-antigravity-auth",
   "google-gemini-cli-auth",
+  "openai-codex-auth",
   "llm-task",
   "lobster",
   "memory-core",
   "memory-lancedb",
-  "voice-call",
 ]);
 
 const normalizeList = (value: unknown): string[] => {
