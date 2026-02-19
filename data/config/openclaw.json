@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.9",
+    "lastTouchedAt": "2026-02-10T18:33:01.468Z"
+  },
+  "auth": {
+    "profiles": {
+      "github-copilot:github": {
+        "provider": "github-copilot",
+        "mode": "token"
+      },
+      "modal:default": {
+        "provider": "modal",
+        "mode": "api-key",
+        "apiKey": "__OPENCLAW_REDACTED__"
+      }
+    }
+  },
+  "models": {
+    "providers": {
+      "modal": {
+        "baseUrl": "https://api.us-west-2.modal.direct/v1",
+        "apiKey": "__OPENCLAW_REDACTED__",
+        "auth": "api-key",
+        "api": "openai-completions",
+        "authHeader": true,
+        "models": ["zai-org/GLM-5-FP8"]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "modal/zai-org/GLM-5-FP8"
+      },
+      "models": {
+        "modal/zai-org/GLM-5-FP8": {},
+        "github-copilot/gpt-4.1": {},
+        "google-gemini-cli/gemini-3-pro-preview": {}
+      },
+      "workspace": "/home/node/.openclaw/workspace",
+      "compaction": { "mode": "safeguard" },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8,
+        "model": "modal/zai-org/GLM-5-FP8"
+      }
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "8582504699:AAERrCi_9WycrziVFK2Kxj09GUSgzwtv43U",
+      "groupPolicy": "allowlist",
+      "streamMode": "partial"
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "lan",
+    "auth": {
+      "mode": "token",
+      "token": "sk-proj-3cc3778be9abfabdf2e94b54d813ec298647e002cab3c4ff"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "calendar.add",
+        "contacts.add",
+        "reminders.add"
+      ]
+    }
+  },
+  "plugins": {
+    "entries": {
+      "telegram": { "enabled": true },
+      "google-gemini-cli-auth": { "enabled": false }
+    }
+  }
+}
