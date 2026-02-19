@@ -2,7 +2,7 @@ services:
   openclaw-gateway:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     image: openclaw:local
     environment:
       HOME: /home/node
@@ -36,7 +36,7 @@ services:
   openclaw-cli:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     image: openclaw:local
     environment:
       HOME: /home/node
