@@ -59,6 +59,10 @@ export const TOOL_GROUPS: Record<string, string[]> = {
     "image",
     "llm-task",
     "lobster",
+<<<<<<< HEAD
+=======
+    "voice-call",
+>>>>>>> 43e724d55 (chore: merge upstream changes)
   ],
 };
 
@@ -77,6 +81,10 @@ const TOOL_PROFILES: Record<ToolProfileId, ToolProfilePolicy> = {
       "image",
       "llm-task",
       "lobster",
+<<<<<<< HEAD
+=======
+      "voice-call",
+>>>>>>> 43e724d55 (chore: merge upstream changes)
     ],
   },
   messaging: {
