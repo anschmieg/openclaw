@@ -1,0 +1,12 @@
+{
+  "id": "infra-agent",
+  "description": "Infrastructure helper: run-safe infra checks, prepare commands, and suggest config changes. Primary: github-copilot/gpt-5-mini for speed and low-cost; fallback: Modal GLM-5-FP8.",
+  "default_model": "github-copilot/gpt-5-mini",
+  "provider": { "name": "local-default", "type": "builtin" },
+  "fallback": { "name": "modal_chat", "endpoint": "https://api.us-west-2.modal.direct/v1/chat/completions", "auth_env": "MODAL_API_KEY", "model": "zai-org/GLM-5-FP8" },
+  "behaviour": {
+    "startup_actions": ["read:/home/node/.openclaw/workspace/AGENTS.md","read:/home/node/.openclaw/workspace/TOOLS.md"],
+    "safety": { "no-destructive-commands": true, "require_user_confirm_for_changes": true },
+    "allowed_commands": ["status","check","suggest"]
+  }
+}

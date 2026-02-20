@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  openclaw:
+    # Local override that ensures a stable `openclaw` CLI is present at /usr/local/bin/openclaw
+    # This wrapper is created on container start so it persists across container restarts (but
+    # not across image rebuilds). It calls the bundled node script at /app/openclaw.mjs.
+    entrypoint: ["/bin/sh", "-c", "mkdir -p /usr/local/bin && printf '#!/bin/sh\nnode /app/openclaw.mjs \"$@\"\\n' > /usr/local/bin/openclaw && chmod +x /usr/local/bin/openclaw && exec \"${OPENCLAW_ENTRYPOINT:-node /app/openclaw.mjs}\" \"$@\""]
+    # If your compose file already sets volumes/ports/etc, this local override will merge with it.
+    # No other changes required here.

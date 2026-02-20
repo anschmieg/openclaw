@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "outlook": {
+      "version": "1.3.0",
+      "installedAt": 1771331115728
+    },
+    "coolify": {
+      "version": "2.1.1",
+      "installedAt": 1771499070951
+    },
+    "cloudflare-api": {
+      "version": "1.0.0",
+      "installedAt": 1771499073516
+    }
+  }
+}

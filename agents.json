@@ -1,0 +1,26 @@
+{
+  "agents": {
+    "default_model": "gpt-5.3-codex",
+    "provider": {
+      "name": "openai-codex",
+      "type": "cli_auth",
+      "client": "openai-codex",
+      "notes": "Primary provider using local openai-codex CLI auth"
+    },
+    "fallbacks": [
+      {
+        "name": "modal_chat",
+        "type": "http",
+        "endpoint": "https://api.us-west-2.modal.direct/v1/chat/completions",
+        "auth_env": "MODAL_API_KEY",
+        "model": "zai-org/GLM-5-FP8",
+        "timeout_seconds": 30
+      }
+    ],
+    "failover_policy": {
+      "on_errors": ["503", "network_error", "rate_limit"],
+      "max_retries": 1,
+      "backoff_seconds": 2
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "chat-agent",
+  "description": "General conversational agent following workspace conventions (reads SOUL.md, USER.md, memory). Primary: gpt-5.3-codex via openai-codex CLI; fallback: Modal GLM-5-FP8 via MODAL_API_KEY.",
+  "default_model": "gpt-5.3-codex",
+  "provider": { "name": "openai-codex", "type": "cli_auth", "client": "openai-codex" },
+  "fallback": { "name": "modal_chat", "endpoint": "https://api.us-west-2.modal.direct/v1/chat/completions", "auth_env": "MODAL_API_KEY", "model": "zai-org/GLM-5-FP8" },
+  "behaviour": {
+    "startup_actions": ["read:/home/node/.openclaw/workspace/SOUL.md","read:/home/node/.openclaw/workspace/USER.md","read:./memory/today.md"],
+    "response_policy": "concise-then-verbose-on-request",
+    "allowed_files": ["/home/node/.openclaw/workspace/*"]
+  }
+}
