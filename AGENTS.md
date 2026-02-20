@@ -116,6 +116,73 @@
 - If `git branch -d/-D <branch>` is policy-blocked, delete the local ref directly: `git update-ref -d refs/heads/<branch>`.
 - Bulk PR close/reopen safety: if a close action would affect more than 5 PRs, first ask for explicit user confirmation with the exact PR count and target scope/query.
 
+## Fork Upstream Sync & Overlay Policy
+
+This is a **fork** of `openclaw/openclaw`. It uses automated merge drivers and hooks to sync with upstream while preserving fork-specific customizations.
+
+### Merge Policy
+
+| File Type                     | Strategy                 | What Happens                                                       |
+| ----------------------------- | ------------------------ | ------------------------------------------------------------------ |
+| **Overlay / fork-only files** | `merge=ours`             | Fork version always wins. Upstream changes are silently ignored.   |
+| **`.gitignore`**              | `merge=union-gitignore`  | Union of both sides. Lines only removed if both sides delete them. |
+| **Everything else**           | `merge=prefer-theirs`    | Upstream version wins automatically.                               |
+| **Modify/delete conflicts**   | Accept upstream deletion | Unless the file is a declared overlay.                             |
+
+### Overlay Files (merge=ours)
+
+These files are **never** overwritten by upstream. Declared in `.gitattributes`:
+
+- `docker-compose.local.yml` — Fork's Docker Compose config
+- `Dockerfile.local` — Fork's custom Dockerfile
+- `data/config/openclaw.json` — Fork's runtime config
+- `entrypoint.sh` — Fork's Docker entrypoint
+- `git-hooks/**` — All merge automation scripts/hooks
+- `extensions/openai-codex-auth/**` — Fork-only auth plugin
+- `.claude/settings.local.json` — Local Claude settings
+- `.gitattributes` — The merge strategy file itself
+
+### Adding a New Overlay File
+
+1. Add the file pattern to `.gitattributes` in the overlay section (after `* merge=prefer-theirs`, before `.gitignore`)
+2. Run `git-hooks/setup-merge-drivers.sh` to re-register drivers
+3. Add the pattern to the `OVERLAY_PATTERNS` array in `git-hooks/sync-upstream.sh`
+4. Update this section in AGENTS.md
+
+### Running an Upstream Sync
+
+```bash
+# One command — fully automated:
+git-hooks/sync-upstream.sh
+
+# Or specify a ref:
+git-hooks/sync-upstream.sh upstream/main
+```
+
+The script: registers merge drivers → fetches upstream → merges → auto-resolves all conflicts → commits.
+
+### First-Time Setup (After Clone)
+
+```bash
+git-hooks/setup-merge-drivers.sh
+```
+
+This registers all three merge drivers (`ours`, `prefer-theirs`, `union-gitignore`) in `.git/config` and installs the post-merge hook.
+
+### Key Files
+
+| File                                  | Purpose                                                 |
+| ------------------------------------- | ------------------------------------------------------- |
+| `.gitattributes`                      | Declares which files use which merge driver             |
+| `git-hooks/setup-merge-drivers.sh`    | Registers drivers in `.git/config` (idempotent)         |
+| `git-hooks/union-gitignore-driver.sh` | Custom driver: union merge for `.gitignore`             |
+| `git-hooks/sync-upstream.sh`          | One-command upstream sync with fallback auto-resolution |
+| `git-hooks/post-merge`                | Safety net: verifies overlays after merge               |
+
+### Important: `.gitattributes` Ordering
+
+Git uses **last-match-wins** for `.gitattributes`. The wildcard `* merge=prefer-theirs` **must** come before specific overlay rules, so the overlays override the default. Never reorder these sections.
+
 ## Security & Configuration Tips
 
 - Web provider stores creds at `~/.openclaw/credentials/`; rerun `openclaw login` if logged out.
