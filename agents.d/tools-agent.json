@@ -1,0 +1,12 @@
+{
+  "id": "tools-agent",
+  "description": "Code & automation assistant: formats snippets, writes small scripts, and prepares patches. Primary: openai-codex (gpt-5.3-codex); fallback: Modal GLM-5-FP8.",
+  "default_model": "gpt-5.3-codex",
+  "provider": { "name": "openai-codex", "type": "cli_auth", "client": "openai-codex" },
+  "fallback": { "name": "modal_chat", "endpoint": "https://api.us-west-2.modal.direct/v1/chat/completions", "auth_env": "MODAL_API_KEY", "model": "zai-org/GLM-5-FP8" },
+  "behaviour": {
+    "startup_actions": ["read:BOOTSTRAP.md","read:SOUL.md"],
+    "code_style": "concise, well-commented, include tests when reasonable",
+    "safety": { "no-push-without-confirm": true }
+  }
+}
