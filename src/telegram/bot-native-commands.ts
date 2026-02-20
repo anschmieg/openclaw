@@ -342,18 +342,23 @@ export const registerTelegramNativeCommands = ({
     runtime.error?.(danger(issue));
   }
   const allCommandsFull: Array<{ command: string; description: string }> = [
-    ...nativeCommands.flatMap((command) => {
-      const normalized = normalizeTelegramCommandName(command.name);
-      if (!normalized || !TELEGRAM_COMMAND_NAME_PATTERN.test(normalized)) {
-        return [];
-      }
-      return [
-        {
+    ...nativeCommands
+      .map((command) => {
+        const normalized = normalizeTelegramCommandName(command.name);
+        if (!TELEGRAM_COMMAND_NAME_PATTERN.test(normalized)) {
+          runtime.error?.(
+            danger(
+              `Native command "${command.name}" is invalid for Telegram (resolved to "${normalized}"). Skipping.`,
+            ),
+          );
+          return null;
+        }
+        return {
           command: normalized,
           description: command.description,
-        },
-      ];
-    }),
+        };
+      })
+      .filter((cmd): cmd is { command: string; description: string } => cmd !== null),
     ...(nativeEnabled ? pluginCatalog.commands : []),
     ...customCommands,
   ];
