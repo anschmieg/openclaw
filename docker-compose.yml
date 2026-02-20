@@ -46,7 +46,7 @@ services:
     command:
       [
         "node",
-        "dist/index.js",
+        "openclaw.mjs",
         "gateway",
         "--allow-unconfigured",
         "--bind",
@@ -86,4 +86,4 @@ services:
     tty: true
     init: true
     restart: "no"
-    entrypoint: ["node", "dist/index.js"]
+    entrypoint: ["node", "openclaw.mjs"]
