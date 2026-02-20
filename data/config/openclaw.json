@@ -24,7 +24,9 @@
         "auth": "api-key",
         "api": "openai-completions",
         "authHeader": true,
-        "models": ["zai-org/GLM-5-FP8"]
+        "models": [
+          "zai-org/GLM-5-FP8"
+        ]
       }
     }
   },
@@ -39,7 +41,9 @@
         "google-gemini-cli/gemini-3-pro-preview": {}
       },
       "workspace": "/home/node/.openclaw/workspace",
-      "compaction": { "mode": "safeguard" },
+      "compaction": {
+        "mode": "safeguard"
+      },
       "maxConcurrent": 4,
       "subagents": {
         "maxConcurrent": 8,
@@ -58,7 +62,7 @@
     "telegram": {
       "enabled": true,
       "dmPolicy": "pairing",
-      "botToken": "8582504699:AAERrCi_9WycrziVFK2Kxj09GUSgzwtv43U",
+      "botToken": "${TELEGRAM_BOT_TOKEN}",
       "groupPolicy": "allowlist",
       "streamMode": "partial"
     }
@@ -88,9 +92,15 @@
   },
   "plugins": {
     "entries": {
-      "telegram": { "enabled": true },
-      "openai-codex-auth": { "enabled": true },
-      "google-gemini-cli-auth": { "enabled": false }
+      "telegram": {
+        "enabled": true
+      },
+      "openai-codex-auth": {
+        "enabled": true
+      },
+      "google-gemini-cli-auth": {
+        "enabled": false
+      }
     }
   }
 }
