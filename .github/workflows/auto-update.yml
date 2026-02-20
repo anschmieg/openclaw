@@ -1,0 +1,56 @@
+name: Auto-update OpenClaw
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # daily at 03:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch upstream
+        run: |
+          git remote add upstream https://github.com/openclaw/openclaw || true
+          git fetch upstream --tags || true
+      - name: Create update branch
+        run: |
+          UPSTREAM_TAG=$(git ls-remote --tags upstream | tail -n1 | awk '{print $2}' | sed 's#refs/tags/##') || true
+          BRANCH=auto/upstream-${UPSTREAM_TAG:-latest}
+          git checkout -b "$BRANCH"
+      - name: Update vendored config (if upstream has openclaw.json)
+        run: |
+          # If upstream provides a default openclaw.json, pull it; otherwise skip
+          if git ls-tree -r upstream/${UPSTREAM_TAG:-main} --name-only | grep -q "openclaw.json"; then
+            git show upstream/${UPSTREAM_TAG:-main}:openclaw.json > openclaw.upstream.json || true
+            mv openclaw.upstream.json openclaw.json
+          fi
+      - name: Apply overlays
+        run: |
+          ./scripts/apply-overlays.sh
+      - name: Validate config
+        run: |
+          openclaw doctor --check || (echo "doctor failed" && exit 1)
+      - name: Run smoke tests
+        run: |
+          # Minimal smoke: show models status
+          openclaw models status --plain || (echo "models status failed" && exit 1)
+      - name: Commit and push
+        run: |
+          git add openclaw.json || true
+          git commit -m "chore: update from upstream (${UPSTREAM_TAG:-latest}) + apply overlays" || echo "no changes"
+          git push origin HEAD
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update from upstream (${UPSTREAM_TAG:-latest})"
+          branch: "auto-update/${{ github.run_id }}"
+          title: "Auto-update: upstream ${UPSTREAM_TAG:-latest}"
+          body: |-
+            Automated update from upstream. CI validated doctor checks and smoke tests.
+            If this PR fails, it will require human intervention.
