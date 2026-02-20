@@ -11,9 +11,17 @@
 #   4. Auto-resolves any residual conflicts using fork policy
 #   5. Commits the result
 #
+# Conflict resolution policy:
+#   - Overlay files (listed in .gitattributes as merge=ours): keep ours
+#   - .gitignore: union merge (keep all lines from both sides)
+#   - .gitattributes: keep ours (fork merge strategy is sacred)
+#   - modify/delete conflicts: accept upstream's deletion unless
+#     the file is a fork overlay
+#   - Everything else: accept upstream/theirs
+#
 # Exit codes:
 #   0 = success (clean merge or auto-resolved)
-#   1 = unresolvable conflict (should never happen with correct .gitattributes)
+#   1 = unresolvable conflict (should never happen with correct setup)
 
 set -euo pipefail
 
@@ -58,19 +66,7 @@ fi
 echo ""
 echo "[4/5] Merge had conflicts — auto-resolving..."
 
-CONFLICTED_FILES=$(git diff --name-only --diff-filter=U 2>/dev/null || true)
-
-if [ -z "$CONFLICTED_FILES" ]; then
-  echo "  No conflicted files found (merge driver resolved them)."
-  git commit --no-edit 2>/dev/null || true
-  echo "[5/5] Done!"
-  exit 0
-fi
-
-echo "  Conflicted files:"
-echo "$CONFLICTED_FILES" | sed 's/^/    /'
-
-# Overlay files declared in .gitattributes
+# Overlay files/patterns — must match .gitattributes
 OVERLAY_PATTERNS=(
   "docker-compose.local.yml"
   "Dockerfile.local"
@@ -79,59 +75,90 @@ OVERLAY_PATTERNS=(
   "git-hooks/"
   "extensions/openai-codex-auth/"
   ".claude/settings.local.json"
+  ".gitattributes"
 )
+
+is_overlay() {
+  local file="$1"
+  for pattern in "${OVERLAY_PATTERNS[@]}"; do
+    if [[ "$file" == "$pattern" ]] || [[ "$file" == $pattern* ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
 
 UNRESOLVED=""
 
-while IFS= read -r file; do
-  [ -z "$file" ] && continue
-
-  IS_OVERLAY=false
-  for pattern in "${OVERLAY_PATTERNS[@]}"; do
-    if [[ "$file" == $pattern* ]]; then
-      IS_OVERLAY=true
-      break
-    fi
-  done
-
-  if [ "$IS_OVERLAY" = true ]; then
-    echo "  → $file: overlay — keeping ours"
-    git checkout --ours -- "$file" 2>/dev/null || true
-    git add "$file"
-  elif [ "$file" = ".gitignore" ]; then
-    echo "  → $file: union-merging..."
-    # Get both versions
-    git show :2:.gitignore > "$ROOT_DIR/.gitignore-ours" 2>/dev/null || true
-    git show :3:.gitignore > "$ROOT_DIR/.gitignore-theirs" 2>/dev/null || true
-    if [ -f "$ROOT_DIR/.gitignore-ours" ] && [ -f "$ROOT_DIR/.gitignore-theirs" ]; then
-      # Union: start with ours, add missing lines from theirs
-      cp "$ROOT_DIR/.gitignore-ours" "$ROOT_DIR/.gitignore"
-      while IFS= read -r line; do
-        [ -z "$line" ] && continue
-        [[ "$line" =~ ^# ]] && continue  # skip comments from theirs
-        if ! grep -qxF "$line" "$ROOT_DIR/.gitignore" 2>/dev/null; then
-          echo "$line" >> "$ROOT_DIR/.gitignore"
-        fi
-      done < "$ROOT_DIR/.gitignore-theirs"
-      rm -f "$ROOT_DIR/.gitignore-ours" "$ROOT_DIR/.gitignore-theirs"
-      git add "$ROOT_DIR/.gitignore"
-      echo "    .gitignore union-merged"
+# --- Handle modify/delete conflicts first ---
+# These show up as "deleted by them" or "deleted by us" in git status
+MODIFY_DELETE=$(git status --porcelain | grep -E '^(DU|UD) ' | awk '{print $2}' || true)
+if [ -n "$MODIFY_DELETE" ]; then
+  echo "  Modify/delete conflicts:"
+  while IFS= read -r file; do
+    [ -z "$file" ] && continue
+    if is_overlay "$file"; then
+      echo "  → $file: overlay — keeping ours"
+      git checkout --ours -- "$file" 2>/dev/null || true
+      git add "$file"
     else
-      echo "    WARN: Could not extract merge stages for .gitignore"
-      UNRESOLVED="$UNRESOLVED $file"
+      echo "  → $file: non-overlay, deleted upstream — accepting deletion"
+      git rm -f "$file" 2>/dev/null || true
     fi
-  elif [ "$file" = ".gitattributes" ]; then
-    echo "  → $file: overlay (keeping fork's merge strategy file)"
-    git checkout --ours -- "$file" 2>/dev/null || true
-    git add "$file"
-  else
-    echo "  → $file: non-overlay — taking theirs (upstream)"
-    git checkout --theirs -- "$file" 2>/dev/null || true
-    git add "$file"
-  fi
-done <<< "$CONFLICTED_FILES"
+  done <<< "$MODIFY_DELETE"
+fi
 
-# Clean up any temp files
+# --- Handle remaining content conflicts ---
+CONFLICTED_FILES=$(git diff --name-only --diff-filter=U 2>/dev/null || true)
+
+if [ -z "$CONFLICTED_FILES" ] && [ -z "$MODIFY_DELETE" ]; then
+  echo "  No conflicted files found (merge drivers resolved them)."
+  git commit --no-edit 2>/dev/null || true
+  echo "[5/5] Done!"
+  exit 0
+fi
+
+if [ -n "$CONFLICTED_FILES" ]; then
+  echo "  Content conflicts:"
+  echo "$CONFLICTED_FILES" | sed 's/^/    /'
+
+  while IFS= read -r file; do
+    [ -z "$file" ] && continue
+
+    if is_overlay "$file"; then
+      echo "  → $file: overlay — keeping ours"
+      git checkout --ours -- "$file" 2>/dev/null || true
+      git add "$file"
+    elif [ "$file" = ".gitignore" ]; then
+      echo "  → $file: union-merging..."
+      git show :2:.gitignore > "$ROOT_DIR/.gitignore-ours" 2>/dev/null || true
+      git show :3:.gitignore > "$ROOT_DIR/.gitignore-theirs" 2>/dev/null || true
+      if [ -f "$ROOT_DIR/.gitignore-ours" ] && [ -f "$ROOT_DIR/.gitignore-theirs" ]; then
+        # Union: start with ours (preserves structure), add missing from theirs
+        cp "$ROOT_DIR/.gitignore-ours" "$ROOT_DIR/.gitignore"
+        while IFS= read -r line; do
+          [ -z "$line" ] && continue
+          [[ "$line" =~ ^# ]] && continue
+          if ! grep -qxF "$line" "$ROOT_DIR/.gitignore" 2>/dev/null; then
+            echo "$line" >> "$ROOT_DIR/.gitignore"
+          fi
+        done < "$ROOT_DIR/.gitignore-theirs"
+        rm -f "$ROOT_DIR/.gitignore-ours" "$ROOT_DIR/.gitignore-theirs"
+        git add "$ROOT_DIR/.gitignore"
+        echo "    .gitignore union-merged"
+      else
+        echo "    WARN: Could not extract merge stages for .gitignore"
+        UNRESOLVED="$UNRESOLVED $file"
+      fi
+    else
+      echo "  → $file: non-overlay — taking theirs (upstream)"
+      git checkout --theirs -- "$file" 2>/dev/null || true
+      git add "$file"
+    fi
+  done <<< "$CONFLICTED_FILES"
+fi
+
+# Clean up temp files
 rm -f "$ROOT_DIR/.gitignore-ours" "$ROOT_DIR/.gitignore-theirs" "$ROOT_DIR/.gitignore.tmp"
 
 if [ -n "$UNRESOLVED" ]; then
