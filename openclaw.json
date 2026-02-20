@@ -1,1 +1,190 @@
-/home/node/.openclaw/openclaw.json
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.20",
+    "lastTouchedAt": "2026-02-20T12:08:17.815Z"
+  },
+  "auth": {
+    "profiles": {}
+  },
+  "models": {
+    "providers": {
+      "custom-1": {
+        "baseUrl": "https://api.us-west-2.modal.direct/v1",
+        "apiKey": "modalresearch_KLclN71NBLTqka4mWtUcLGf9ZNDvOPoi-Ko0CVc13SU",
+        "auth": "api-key",
+        "api": "openai-completions",
+        "authHeader": true,
+        "models": []
+      },
+      "modal": {
+        "baseUrl": "https://api.us-west-2.modal.direct/v1",
+        "apiKey": "${MODAL_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          { "id": "zai-org/GLM-5-FP8", "name": "GLM-5 FP8" }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "custom-1/zai-org/GLM-5-FP8"
+      },
+      "models": {
+        "github-copilot/gpt-5-mini": {
+          "alias": "gpt-mini"
+        }
+      },
+      "compaction": {
+        "mode": "safeguard",
+        "memoryFlush": {
+          "enabled": true
+        }
+      },
+      "subagents": {
+        "model": "custom-1/zai-org/GLM-5-FP8"
+      }
+    },
+    "list": [
+      {
+        "id": "chat",
+        "default": true,
+        "name": "Chat",
+        "model": "github-copilot/gpt-5-mini"
+      },
+      {
+        "id": "main",
+        "name": "Codex",
+        "model": "custom-1/zai-org/GLM-5-FP8"
+      },
+      {
+        "id": "research",
+        "name": "Research",
+        "model": "custom-1/zai-org/GLM-5-FP8"
+      },
+      {
+        "id": "ops",
+        "name": "Ops",
+        "model": "custom-1/zai-org/GLM-5-FP8",
+        "tools": {
+          "profile": "coding"
+        }
+      },
+      {
+        "id": "productivity",
+        "name": "Productivity",
+        "model": "github-copilot/gpt-5-mini",
+        "tools": {
+          "profile": "messaging"
+        }
+      },
+      {
+        "id": "chat-agent",
+        "name": "chat-agent",
+        "workspace": "/home/node/.openclaw/workspace",
+        "agentDir": "/home/node/.openclaw/agents/chat-agent/agent",
+        "model": "gpt-5.3-codex"
+      },
+      {
+        "id": "infra-agent",
+        "name": "infra-agent",
+        "workspace": "/home/node/.openclaw/workspace",
+        "agentDir": "/home/node/.openclaw/agents/infra-agent/agent",
+        "model": "github-copilot/gpt-5-mini"
+      },
+      {
+        "id": "tools-agent",
+        "name": "tools-agent",
+        "workspace": "/home/node/.openclaw/workspace",
+        "agentDir": "/home/node/.openclaw/agents/tools-agent/agent",
+        "model": "gpt-5.3-codex"
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "agentId": "ops",
+      "match": {
+        "channel": "telegram",
+        "peer": {
+          "kind": "group",
+          "id": "-1003774859123"
+        }
+      }
+    },
+    {
+      "agentId": "productivity",
+      "match": {
+        "channel": "telegram",
+        "peer": {
+          "kind": "group",
+          "id": "-1003857852266"
+        }
+      }
+    },
+    {
+      "agentId": "chat",
+      "match": {
+        "channel": "telegram"
+      }
+    }
+  ],
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true
+  },
+  "session": {
+    "dmScope": "main"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "8582504699:AAEOHCNb4oAba6PWI7jFf1zaLv_zQbY48-Y",
+      "groups": {
+        "-1003774859123": {
+          "requireMention": false
+        },
+        "-1003857852266": {
+          "requireMention": false
+        }
+      },
+      "allowFrom": [],
+      "groupPolicy": "allowlist",
+      "streamMode": "partial",
+      "actions": {
+        "reactions": true,
+        "sendMessage": true,
+        "deleteMessage": true,
+        "sticker": true
+      },
+      "ackReaction": "\u23f3"
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "controlUi": {
+      "dangerouslyDisableDeviceAuth": true
+    },
+    "auth": {
+      "mode": "token",
+      "token": "82ed709b611d75f83c631e4ae8dcf363360adf8ff78657e1",
+      "trustedProxy": {
+        "userHeader": "cf-access-authenticated-user-email"
+      }
+    },
+    "trustedProxies": [
+      "10.0.5.2"
+    ]
+  },
+  "plugins": {
+    "enabled": true,
+    "entries": {
+      "telegram": {
+        "enabled": true
+      }
+    }
+  }
+}
