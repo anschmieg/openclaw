@@ -13,44 +13,76 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Install deps
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq docker-compose docker.io
       - name: Fetch upstream
         run: |
           git remote add upstream https://github.com/openclaw/openclaw || true
           git fetch upstream --tags || true
       - name: Create update branch
         run: |
-          UPSTREAM_TAG=$(git ls-remote --tags upstream | tail -n1 | awk '{print $2}' | sed 's#refs/tags/##') || true
-          BRANCH=auto/upstream-${UPSTREAM_TAG:-latest}
+          UPSTREAM_REF=$(git ls-remote --tags upstream | tail -n1 | awk '{print $2}' | sed 's#refs/tags/##') || true
+          UPSTREAM_REF=${UPSTREAM_REF:-main}
+          BRANCH=auto/upstream-${UPSTREAM_REF}
           git checkout -b "$BRANCH"
       - name: Update vendored config (if upstream has openclaw.json)
         run: |
-          # If upstream provides a default openclaw.json, pull it; otherwise skip
-          if git ls-tree -r upstream/${UPSTREAM_TAG:-main} --name-only | grep -q "openclaw.json"; then
-            git show upstream/${UPSTREAM_TAG:-main}:openclaw.json > openclaw.upstream.json || true
+          if git ls-tree -r upstream/${UPSTREAM_REF} --name-only | grep -q "openclaw.json"; then
+            git show upstream/${UPSTREAM_REF}:openclaw.json > openclaw.upstream.json || true
             mv openclaw.upstream.json openclaw.json
           fi
-      - name: Apply overlays
+      - name: Apply patches
         run: |
+          chmod +x scripts/apply-overlays.sh
           ./scripts/apply-overlays.sh
       - name: Validate config
         run: |
           openclaw doctor --check || (echo "doctor failed" && exit 1)
-      - name: Run smoke tests
+      - name: Build staging image
         run: |
-          # Minimal smoke: show models status
+          docker build -t openclaw:staging . || (echo "build failed" && exit 1)
+      - name: Run staging stack
+        run: |
+          docker-compose -f docker-compose.local.yml up -d || (echo "compose up failed" && exit 1)
+          # Give services a few seconds to start
+          sleep 10
+      - name: Staging smoke tests
+        run: |
           openclaw models status --plain || (echo "models status failed" && exit 1)
-      - name: Commit and push
+          openclaw agent --agent chat -m "health check" --local || echo "agent healthcheck failed" && exit 1
+      - name: Teardown staging
+        if: always()
+        run: |
+          docker-compose -f docker-compose.local.yml down || true
+      - name: Commit & push update branch
         run: |
           git add openclaw.json || true
-          git commit -m "chore: update from upstream (${UPSTREAM_TAG:-latest}) + apply overlays" || echo "no changes"
+          git commit -m "chore: update from upstream (${UPSTREAM_REF}) + apply patches" || echo "no changes"
           git push origin HEAD
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update from upstream (${UPSTREAM_TAG:-latest})"
+          commit-message: "chore: update from upstream (${UPSTREAM_REF})"
           branch: "auto-update/${{ github.run_id }}"
-          title: "Auto-update: upstream ${UPSTREAM_TAG:-latest}"
+          title: "Auto-update: upstream ${UPSTREAM_REF}"
           body: |-
             Automated update from upstream. CI validated doctor checks and smoke tests.
             If this PR fails, it will require human intervention.
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: update
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Deploy to production
+        run: |
+          # This job is intentionally a placeholder. Your real deploy should:
+          # - Build an image
+          # - Deploy to staging
+          # - Run health checks
+          # - Promote to production or rollback on failure
+          echo "Manual deployment placeholder"
