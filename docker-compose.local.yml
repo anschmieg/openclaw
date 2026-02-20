@@ -13,6 +13,7 @@ services:
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
+      OPENCLAW_DOCKER_APT_PACKAGES: ${OPENCLAW_DOCKER_APT_PACKAGES}
     volumes:
       - ./data/config:/home/node/.openclaw
       - ./data/workspace:/home/node/.openclaw/workspace
@@ -48,6 +49,7 @@ services:
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       OPENCLAW_AGENT_DEFAULT_MODEL: ${OPENCLAW_AGENT_DEFAULT_MODEL}
+      OPENCLAW_DOCKER_APT_PACKAGES: ${OPENCLAW_DOCKER_APT_PACKAGES}
     volumes:
       - ./data/config:/home/node/.openclaw
       - ./data/workspace:/home/node/.openclaw/workspace
@@ -56,7 +58,7 @@ services:
     tty: true
     init: true
     restart: "no"
-    entrypoint: ["node", "dist/index.js"]
+    entrypoint: ["/bin/sh", "-c", "mkdir -p /usr/local/bin && printf "#!/bin/sh\nnode /app/openclaw.mjs \"$@\"\n" > /usr/local/bin/openclaw && chmod +x /usr/local/bin/openclaw && exec node dist/index.js"]
 
 volumes:
   openclaw-brew:
