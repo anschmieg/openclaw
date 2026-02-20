@@ -15,22 +15,9 @@ export type NormalizedPluginsConfig = {
 
 export const BUNDLED_ENABLED_BY_DEFAULT = new Set<string>([
   "device-pair",
+  "phone-control",
   "talk-voice",
-  "copilot-proxy",
-  "google-antigravity-auth",
-  "google-gemini-cli-auth",
-<<<<<<< HEAD
   "openai-codex-auth",
-=======
->>>>>>> 43e724d55 (chore: merge upstream changes)
-  "llm-task",
-  "lobster",
-  "memory-core",
-  "memory-lancedb",
-<<<<<<< HEAD
-=======
-  "voice-call",
->>>>>>> 43e724d55 (chore: merge upstream changes)
 ]);
 
 const normalizeList = (value: unknown): string[] => {
