@@ -1,0 +1,23 @@
+{
+  "models": {
+    "providers": {
+      "github-copilot": {
+        "models": [
+          { "id": "github-copilot/claude-sonnet-4.6", "name": "Claude Sonnet 4.6" },
+          { "id": "github-copilot/claude-opus-4.6", "name": "Claude Opus 4.6" },
+          { "id": "github-copilot/gpt-4.1", "name": "GPT-4.1" },
+          { "id": "github-copilot/oswe-vscode-prime", "name": "OSWE VSCode Prime", "alias": "raptor-mini" }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "models": {
+        "github-copilot/oswe-vscode-prime": {
+          "alias": "raptor-mini"
+        }
+      }
+    }
+  }
+}
