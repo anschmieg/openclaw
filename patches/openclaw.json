@@ -1,0 +1,19 @@
+{
+  // Overlay: local customizations. This file is applied on top of upstream openclaw.json
+  // Keep only local changes here; avoid editing upstream files directly.
+  "models": {
+    "providers": {
+      "modal": {
+        "apiKey": "${MODAL_API_KEY}",
+        "models": [
+          { "id": "zai-org/GLM-5-FP8", "name": "GLM-5 FP8" }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": { "primary": "custom-1/zai-org/GLM-5-FP8" }
+    }
+  }
+}
