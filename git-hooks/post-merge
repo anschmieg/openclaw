@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# post-merge: Verify overlay files survived and fix .gitignore if needed.
+# This hook runs AFTER a successful merge and acts as a safety net.
+# The primary automation is in .gitattributes merge drivers.
+
+set -euo pipefail
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+echo "[post-merge] Verifying overlay files..."
+
+# List of fork-only overlay files that must never be overwritten.
+# If any were accidentally clobbered, restore them from HEAD.
+OVERLAY_FILES=(
+  "docker-compose.local.yml"
+  "Dockerfile.local"
+  "data/config/openclaw.json"
+  "entrypoint.sh"
+  "git-hooks/pre-commit"
+  "git-hooks/setup-merge-drivers.sh"
+  "git-hooks/union-gitignore-driver.sh"
+  "git-hooks/post-merge"
+  "extensions/openai-codex-auth/index.ts"
+  "extensions/openai-codex-auth/openclaw.plugin.json"
+  "extensions/openai-codex-auth/package.json"
+  ".claude/settings.local.json"
+)
+
+for file in "${OVERLAY_FILES[@]}"; do
+  filepath="$ROOT_DIR/$file"
+  if [ -e "$filepath" ]; then
+    # Check for conflict markers — if present, restore ours
+    if grep -q '<<<<<<<' "$filepath" 2>/dev/null; then
+      echo "[post-merge] WARN: Conflict markers in $file — restoring fork version"
+      git checkout --ours -- "$filepath" 2>/dev/null || true
+      git add "$filepath" 2>/dev/null || true
+    fi
+  fi
+done
+
+# Safety check: .gitignore should never have conflict markers
+if grep -q '<<<<<<<' "$ROOT_DIR/.gitignore" 2>/dev/null; then
+  echo "[post-merge] WARN: .gitignore has conflict markers — running union merge"
+  # Get ours and theirs from merge state if available
+  if git show :2:.gitignore > "$ROOT_DIR/.gitignore-ours" 2>/dev/null && \
+     git show :3:.gitignore > "$ROOT_DIR/.gitignore-theirs" 2>/dev/null; then
+    # Union: all lines from both
+    cat "$ROOT_DIR/.gitignore-ours" "$ROOT_DIR/.gitignore-theirs" | sort -u > "$ROOT_DIR/.gitignore"
+    git add "$ROOT_DIR/.gitignore"
+    rm -f "$ROOT_DIR/.gitignore-ours" "$ROOT_DIR/.gitignore-theirs"
+    echo "[post-merge] .gitignore union-merged successfully"
+  fi
+fi
+
+echo "[post-merge] Overlay verification complete."
+exit 0
