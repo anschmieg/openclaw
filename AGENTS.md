@@ -133,7 +133,8 @@ This is a **fork** of `openclaw/openclaw`. It uses automated merge drivers and h
 
 These files are **never** overwritten by upstream. Declared in `.gitattributes`:
 
-- `docker-compose.local.yml` — Fork's Docker Compose config
+- `docker-compose.yml` — Fork's Coolify/Traefik deployment config (review upstream changes manually)
+- `docker-compose.local.yml` — Fork's local development Compose config
 - `Dockerfile.local` — Fork's custom Dockerfile
 - `data/config/openclaw.json` — Fork's runtime config
 - `entrypoint.sh` — Fork's Docker entrypoint
