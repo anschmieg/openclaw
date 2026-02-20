@@ -57,15 +57,6 @@ export const TOOL_GROUPS: Record<string, string[]> = {
     "web_search",
     "web_fetch",
     "image",
-    "llm-task",
-    "lobster",
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    "voice-call",
->>>>>>> 43e724d55 (chore: merge upstream changes)
-=======
->>>>>>> 91658f754 (Deploy: add missing plugin manifest and update tool policy)
   ],
 };
 
@@ -76,22 +67,7 @@ const TOOL_PROFILES: Record<ToolProfileId, ToolProfilePolicy> = {
     allow: ["session_status"],
   },
   coding: {
-    allow: [
-      "group:fs",
-      "group:runtime",
-      "group:sessions",
-      "group:memory",
-      "image",
-      "llm-task",
-      "lobster",
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      "voice-call",
->>>>>>> 43e724d55 (chore: merge upstream changes)
-=======
->>>>>>> 91658f754 (Deploy: add missing plugin manifest and update tool policy)
-    ],
+    allow: ["group:fs", "group:runtime", "group:sessions", "group:memory", "image"],
   },
   messaging: {
     allow: [
