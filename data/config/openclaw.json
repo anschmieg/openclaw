@@ -89,6 +89,7 @@
   "plugins": {
     "entries": {
       "telegram": { "enabled": true },
+      "openai-codex-auth": { "enabled": true },
       "google-gemini-cli-auth": { "enabled": false }
     }
   }

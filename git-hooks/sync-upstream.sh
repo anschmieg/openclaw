@@ -68,6 +68,7 @@ echo "[4/5] Merge had conflicts — auto-resolving..."
 
 # Overlay files/patterns — must match .gitattributes
 OVERLAY_PATTERNS=(
+  "docker-compose.yml"
   "docker-compose.local.yml"
   "Dockerfile.local"
   "data/config/openclaw.json"

@@ -22,6 +22,7 @@
 * merge=prefer-theirs
 
 # --- Overlay / fork-only files: always keep ours (overrides default) ---
+docker-compose.yml merge=ours
 docker-compose.local.yml merge=ours
 Dockerfile.local merge=ours
 data/config/openclaw.json merge=ours

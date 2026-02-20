@@ -12,6 +12,7 @@ echo "[post-merge] Verifying overlay files..."
 # List of fork-only overlay files that must never be overwritten.
 # If any were accidentally clobbered, restore them from HEAD.
 OVERLAY_FILES=(
+  "docker-compose.yml"
   "docker-compose.local.yml"
   "Dockerfile.local"
   "data/config/openclaw.json"
