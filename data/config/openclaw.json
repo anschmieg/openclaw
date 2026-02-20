@@ -1,44 +1,39 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.2.9",
-    "lastTouchedAt": "2026-02-10T18:33:01.468Z"
+    "lastTouchedVersion": "2026.2.20",
+    "lastTouchedAt": "2026-02-20T00:00:00.000Z"
   },
   "auth": {
     "profiles": {
       "github-copilot:github": {
         "provider": "github-copilot",
         "mode": "token"
-      },
-      "modal:default": {
-        "provider": "modal",
-        "mode": "api-key",
-        "apiKey": "__OPENCLAW_REDACTED__"
       }
     }
   },
   "models": {
     "providers": {
-      "modal": {
-        "baseUrl": "https://api.us-west-2.modal.direct/v1",
-        "apiKey": "__OPENCLAW_REDACTED__",
-        "auth": "api-key",
-        "api": "openai-completions",
-        "authHeader": true,
-        "models": [
-          "zai-org/GLM-5-FP8"
-        ]
+      "github-copilot": {
+        "baseUrl": "https://api.individual.githubcopilot.com",
+        "auth": "token",
+        "api": "openai-responses",
+        "models": []
       }
     }
   },
   "agents": {
     "defaults": {
       "model": {
-        "primary": "modal/zai-org/GLM-5-FP8"
+        "primary": "github-copilot/gpt-5-mini"
       },
       "models": {
-        "modal/zai-org/GLM-5-FP8": {},
+        "github-copilot/gpt-5-mini": {},
         "github-copilot/gpt-4.1": {},
-        "google-gemini-cli/gemini-3-pro-preview": {}
+        "github-copilot/oswe-vscode-prime": {
+          "alias": "raptor-mini"
+        },
+        "github-copilot/claude-opus-4.6": {},
+        "github-copilot/claude-sonnet-4.6": {}
       },
       "workspace": "/home/node/.openclaw/workspace",
       "compaction": {
@@ -47,7 +42,7 @@
       "maxConcurrent": 4,
       "subagents": {
         "maxConcurrent": 8,
-        "model": "modal/zai-org/GLM-5-FP8"
+        "model": "github-copilot/gpt-5-mini"
       }
     }
   },
