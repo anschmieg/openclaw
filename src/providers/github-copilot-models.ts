@@ -8,6 +8,7 @@ const DEFAULT_MAX_TOKENS = 8192;
 // return an error and users can remove it from their config.
 const DEFAULT_MODEL_IDS = [
   "claude-sonnet-4.6",
+  "claude-opus-4.6",
   "claude-sonnet-4.5",
   "gpt-4o",
   "gpt-4.1",
@@ -16,6 +17,8 @@ const DEFAULT_MODEL_IDS = [
   "o1",
   "o1-mini",
   "o3-mini",
+  // oswe-vscode-prime: alias raptor-mini (fast, lightweight Copilot model)
+  "oswe-vscode-prime",
 ] as const;
 
 export function getDefaultCopilotModelIds(): string[] {

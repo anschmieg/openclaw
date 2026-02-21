@@ -7,6 +7,14 @@ describe("github-copilot-models", () => {
       expect(getDefaultCopilotModelIds()).toContain("claude-sonnet-4.6");
     });
 
+    it("includes claude-opus-4.6", () => {
+      expect(getDefaultCopilotModelIds()).toContain("claude-opus-4.6");
+    });
+
+    it("includes oswe-vscode-prime", () => {
+      expect(getDefaultCopilotModelIds()).toContain("oswe-vscode-prime");
+    });
+
     it("includes claude-sonnet-4.5", () => {
       expect(getDefaultCopilotModelIds()).toContain("claude-sonnet-4.5");
     });
