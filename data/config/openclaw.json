@@ -109,8 +109,13 @@
             }
         }
     },
+<<<<<<< HEAD
     "\$include": [
         "./providers.ai-gateway.json",
         "./providers.mistral.json"
     ]
 }
+=======
+    "$include": "./providers.ai-gateway.json"
+}
+>>>>>>> 4b621f7bf (feat(config): add ai-gateway as OpenAI-compat provider via $include (providers.ai-gateway.json))
