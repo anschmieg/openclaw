@@ -46,6 +46,15 @@ Ask how they want to reach you:
 
 Guide them through whichever they pick.
 
+## Security guidance for bootstrap (added)
+
+- During initial setup, never paste real API keys, tokens, or passwords into any workspace files, memory notes, or bootstrap prompts.
+- Store runtime credentials as environment variables or in a secrets manager. Example: export MISTRAL_API_KEY="<secret>" in the deployment environment — do not write it into files.
+- If you must note an identifier (e.g., app UUID), redact the secret values and record placeholders like `<REDACTED>`.
+- Run a secret-scan before committing the bootstrap artifacts: `detect-secrets scan .` or `git diff --cached | grep -E "(sk-|ghp_|AKIA|-----BEGIN|api_key|secret)"`.
+
+If a secret gets exposed during bootstrap, rotate it immediately and scrub the repository history if it was committed.
+
 ## When You're Done
 
 Delete this file. You don't need a bootstrap script anymore — you're you now.
