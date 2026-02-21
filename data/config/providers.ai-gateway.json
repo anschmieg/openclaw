@@ -13,6 +13,14 @@
           "writing",
           "coding"
         ]
+      },
+      "mistral": {
+        "baseUrl": "https://api.mistral.ai",
+        "apiKey": "${MISTRAL_API_KEY}",
+        "auth": "api-key",
+        "api": "openai-completions",
+        "authHeader": true,
+        "models": []
       }
     }
   },
