@@ -8,20 +8,10 @@
         "api": "openai-completions",
         "authHeader": true,
         "models": [
-          "coding-fast",
-          "coding-high",
-          "coding-haiku",
-          "coding-reasoning",
-          "gpt-5-mini",
-          "gpt-4.1",
-          "gpt-5",
-          "gpt-5.1-codex-max",
-          "gpt-5.2-codex",
-          "oswe-vscode-prime",
-          "kiro-claude-sonnet-4-5",
-          "kiro-claude-haiku-4-5",
-          "claude-sonnet-4-6",
-          "claude-haiku-4.5"
+          "agent-high",
+          "agent",
+          "writing",
+          "coding"
         ]
       }
     }
@@ -29,10 +19,10 @@
   "agents": {
     "defaults": {
       "models": {
-        "ai-gateway/coding-fast": {},
-        "ai-gateway/coding-high": {},
-        "ai-gateway/coding-haiku": {},
-        "ai-gateway/coding-reasoning": {}
+        "ai-gateway/agent-high": {},
+        "ai-gateway/agent": {},
+        "ai-gateway/writing": {},
+        "ai-gateway/coding": {}
       }
     }
   }
